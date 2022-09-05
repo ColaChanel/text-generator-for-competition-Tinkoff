@@ -3,12 +3,13 @@ import numpy as np
 import random
 import pickle
 
+
 class Model(object):
 
     # Обучение
-    def fit(self):
+    def fit(self, input_dir="texts"):
         name_training = str(input('Введите название файла train '))
-        f = open('{}'.format("texts/" + name_training), encoding='utf-8')
+        f = open('{}'.format(input_dir + "/" + name_training), encoding='utf-8')
         text = ''
         for line in f.readlines():
             text += str(line)
@@ -31,7 +32,7 @@ class Model(object):
 
         # сохранeние модели
         name_file = str(input('введите название модели сохранения '))
-        with open("models/"+name_file+'.pkl', 'wb') as f:
+        with open("models/" + name_file + '.pkl', 'wb') as f:
             pickle.dump(dictionary, f)
         # pickle.dump('{}'.format("models/"+name_file), dictionary)
         # np.save('{}'.format("models/"+name_file), dictionary)
@@ -40,7 +41,7 @@ class Model(object):
     def generate(self):
         # загрузка модели
         name_file = str(input('введите название модели загрузки '))
-        with open("models/"+name_file+'.pkl', 'rb') as db_file:
+        with open("models/" + name_file + '.pkl', 'rb') as db_file:
             read_dictionary = pickle.load(db_file)
         # read_dictionary = np.load('{}.pkl'.format("models/"+name_file), allow_pickle=True).item()
 
@@ -60,6 +61,27 @@ class Model(object):
         return sequence
 
 
-obj = Model()
-# obj.fit()
-print(obj.generate())
+def main():
+    obj = Model()
+    while True:
+        print('1. Обучать модель')
+        print('2. Генерировать результат')
+        print('3.Выйти')
+        start = str(input('Что вы хотите делать введите цифру: '))
+        if start =='3':
+            break
+        if start == '1':
+            answer = str(input("Хотити ли вы прописать путь до папки? Да или Нет. "))
+            if answer == "Да":
+                path = str(input('Введите путь используя слеши (/) до папки кроме последнего: '))
+                obj.fit(input_dir=path)
+            else:
+                obj.fit()
+        elif start == '2':
+            print(obj.generate())
+        else:
+            print('Вы ввели неверно команду, вводите число')
+
+
+if __name__ == "__main__":
+    main()
